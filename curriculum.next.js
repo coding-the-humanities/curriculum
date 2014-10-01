@@ -1,30 +1,86 @@
-class Dog {
-  constructor(){
-    this._name = "Sammy";
+class Card {
+
+  constructor({title, type, description}){
+    this._title = title;
+    this._type = type || "Exercise";
+    this._description = description;
   }
 
-  get name(){
-    return this._name;
+  get title(){
+    return this._title;
+  }
+
+  set title(title){
+    if(this.checkAttribute(title)){
+      this._title = title;
+    }
+  }
+
+  get description(){
+    return this._description;
+  }
+
+  set description(description){
+    if(this.checkAttribute(description)){
+      this._description = description;
+    }
+  }
+
+  get type(){
+    return this._type;
+  }
+
+  get isValid(){
+    var valid = true;
+    ["title", "description"].forEach((prop) => {
+      if(!this[prop]){
+        valid = false
+      };
+    });
+    return valid;
+  }
+
+  checkAttribute(attr){
+    if(attr != ""){
+      return true;
+    }
   }
 }
 
+
+var c = new Card({
+  title: "new"
+});
+
+var cards = [c];
+
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault("counter", 0);
 
-  var d = new Dog;
-  console.log(d.name);
+  Session.setDefault("cards", cards);
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get("counter");
+  Template.exerciseCard.helpers({
+    cards: function () {
+      cards = Session.get("cards").map((card) => new Card({
+        title: card._title,
+        type: card._type,
+        description: card._description
+      }));
+      return cards;
     }
   });
 
-  Template.hello.events({
+  Template.addCard.events({
     'click button': function () {
-      // increment the counter when button is clicked
-      Session.set("counter", Session.get("counter") + 1);
+      var newCard = new Card({});
+
+      newCard.title = $('.title').val();
+      newCard.description = $('.description').val();
+
+      if(newCard.isValid){
+        cards.push(newCard);
+      }
+
+      Session.set("cards", cards);
     }
   });
 }

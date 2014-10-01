@@ -3,12 +3,20 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
-
-  {{> hello}}
+  {{> addCard}}
+  {{> exerciseCard}}
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="addCard">
+  <input class="title" type="text" value=""/>
+  <input class="description" type="textarea" value=""/>
+  <button>Add Card</button>
+</template>
+
+<template name="exerciseCard">
+  {{#each cards}}
+    <h1>{{this.title}}</h1>
+    <h2>{{this.type}}</h2>
+    <p>{{this.description}}</p>
+  {{/each}}
 </template>
